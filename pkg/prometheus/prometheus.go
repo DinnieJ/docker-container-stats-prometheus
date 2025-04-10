@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/DinnieJ/docker-stats-prometheus/pkg/docker"
+	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/docker"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

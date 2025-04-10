@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/DinnieJ/docker-stats-prometheus/pkg/docker"
-	"github.com/DinnieJ/docker-stats-prometheus/pkg/prometheus"
+	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/docker"
+	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/prometheus"
 	"github.com/docker/docker/api/types/container"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
