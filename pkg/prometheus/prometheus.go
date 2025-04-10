@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/docker"
+	"github.com/docker/docker/api/types/container"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -56,35 +56,35 @@ func init() {
 	prometheus.MustRegister(DockerCpuUsage, DockerMemoryUsage, DockerIOUsage)
 }
 
-func getCpuUsageFromDockerStat(stat docker.DockerContainerStatInfo) float64 {
+func getCpuUsageFromDockerStat(stat container.StatsResponse) float64 {
 	// fmt.Println(stat)
-	cpuDelta := stat.CpuStats.CpuUsage.TotalUsage - stat.PreCpuStats.CpuUsage.TotalUsage
-	systemCpuDelta := stat.CpuStats.SystemUsage - stat.PreCpuStats.SystemUsage
-	numberOfCpu := stat.CpuStats.OnlineCpus
+	cpuDelta := stat.CPUStats.CPUUsage.TotalUsage - stat.PreCPUStats.CPUUsage.TotalUsage
+	systemCpuDelta := stat.CPUStats.SystemUsage - stat.PreCPUStats.SystemUsage
+	numberOfCpu := stat.CPUStats.OnlineCPUs
 	if systemCpuDelta == 0 {
 		return 0
 	}
 	return (float64(cpuDelta) / float64(systemCpuDelta)) * float64(numberOfCpu) * 100
 }
 
-func getMemoryUsageFromDockerStat(stat docker.DockerContainerStatInfo) float64 {
+func getMemoryUsageFromDockerStat(stat container.StatsResponse) float64 {
 	return float64(stat.MemoryStats.Usage) / float64(stat.MemoryStats.Limit) * 100
 }
 
-func getIOUsageFromDockerStat(stat docker.DockerContainerStatInfo) (float64, float64) {
+func getIOUsageFromDockerStat(stat container.StatsResponse) (float64, float64) {
 	var vRead float64
 	var vWrite float64
 
-	for _, v := range stat.BlockIOStats.IoServiceBytesRecursive {
-		if v.Operator == "read" {
+	for _, v := range stat.BlkioStats.IoServiceBytesRecursive {
+		if v.Op == "read" {
 			vRead = float64(v.Value)
-		} else if v.Operator == "write" {
+		} else if v.Op == "write" {
 			vWrite = float64(v.Value)
 		}
 	}
 	return vRead, vWrite
 }
-func BackgroundMetricHandler(ctx context.Context, ch chan docker.DockerContainerStatInfo) {
+func BackgroundMetricHandler(ctx context.Context, ch chan container.StatsResponse) {
 	for {
 		select {
 		case <-ctx.Done():

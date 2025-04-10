@@ -6,7 +6,7 @@ on:
       - "v*"
       - "latest"
     tags:
-      - "v*"
+      - "build-release"
 permissions:
   contents: write
 jobs:
