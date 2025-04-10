@@ -30,7 +30,7 @@ func main() {
 		// wg.Done()
 	}()
 
-	channelStats := make(chan docker.DockerContainerStatInfo, 1)
+	channelStats := make(chan container.StatsResponse, 1)
 	channelContainers := make(chan []container.Summary, 1)
 
 	// Workflow
