@@ -6,7 +6,7 @@ on:
       - "v*"
       - "latest"
     tags:
-      - "build-release"
+      - "v*"
 permissions:
   contents: write
 jobs:
@@ -23,13 +23,15 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.24.1'
+      - name: Get tagged version
+        run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Get OS and arch information
         run: |
           GOOSARCH=${{matrix.goosarch}}
           GOOS=${GOOSARCH%/*}
           GOARCH=${GOOSARCH#*/}
           APP_NAME=dsp
-          BINARY_NAME=${APP_NAME}-$GOOS-$GOARCH-${{github.ref_name}}
+          BINARY_NAME=${APP_NAME}-$GOOS-$GOARCH-$VERSION
           echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
           echo "GOOS=$GOOS" >> $GITHUB_ENV
           echo "GOARCH=$GOARCH" >> $GITHUB_ENV
@@ -45,6 +47,6 @@ jobs:
           body_path: ".github/RELEASE-TEMPLATE.md"
           draft: false
           files: ${{env.BINARY_NAME}}
-          tag_name: ${{github.ref_name}}
+          tag_name: ${{env.VERSION}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
