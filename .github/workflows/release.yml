@@ -6,7 +6,8 @@ on:
       - master
     tags:
       - "v*"
-
+permissions:
+  contents: write
 jobs:
   release:
     runs-on: self-hosted
@@ -36,7 +37,7 @@ jobs:
         run:
           git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
       - name: Release binary
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.2.1
         with:
           body_path: ".github/RELEASE-TEMPLATE.md"
           draft: true
