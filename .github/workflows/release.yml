@@ -45,5 +45,6 @@ jobs:
           body_path: ".github/RELEASE-TEMPLATE.md"
           draft: false
           files: ${{env.BINARY_NAME}}
+          tag_name: Binary
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
