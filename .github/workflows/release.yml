@@ -5,6 +5,8 @@ on:
     branches:
       - "v*"
       - "latest"
+    tags:
+      - "v*"
 permissions:
   contents: write
 jobs:
