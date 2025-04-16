@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/docker"
+	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/logger"
 	"github.com/DinnieJ/docker-container-stats-prometheus/pkg/prometheus"
 	"github.com/docker/docker/api/types/container"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -19,12 +19,15 @@ func main() {
 	defer cancel()
 	sigChannel := make(chan os.Signal, 1)
 	signal.Notify(sigChannel, os.Interrupt, syscall.SIGTERM)
-
+	logging := logger.GetLogger(&logger.LoggerConfig{
+		Name:  "Application",
+		Level: logger.TRACE,
+	})
 	// wg := sync.WaitGroup{}
 	go func() {
-		fmt.Println("Waiting for interrupt signal")
+		logging.Warn("Waiting for interrupt signal")
 		<-sigChannel
-		fmt.Println("Kill process")
+		logging.Fatal("Killing process")
 		cancel()
 		os.Exit(0)
 		// wg.Done()

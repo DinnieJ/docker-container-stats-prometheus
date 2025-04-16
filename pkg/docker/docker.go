@@ -3,6 +3,7 @@ package docker
 import (
 	"context"
 
+	logging "github.com/DinnieJ/docker-container-stats-prometheus/pkg/logger"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 )
@@ -14,6 +15,7 @@ type DockerClientInterface interface {
 }
 
 var dockerClient *client.Client
+var logger *logging.Logger
 
 const STATS_API_INTERVAL = 15
 const CONTAINER_SCAN_INTERVAL = 30
@@ -24,4 +26,8 @@ func init() {
 		panic("Failed to initialize docker client, maybe your system Docker is not running ?")
 	}
 	dockerClient = c
+	logger = logging.GetLogger(&logging.LoggerConfig{
+		Name:  "docker",
+		Level: logging.TRACE,
+	})
 }

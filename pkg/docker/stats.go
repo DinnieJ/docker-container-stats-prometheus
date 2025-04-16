@@ -14,7 +14,7 @@ import (
 func ChannelFetchDockerContainers(ch chan []container.Summary, ctx context.Context) error {
 	defer close(ch)
 	for {
-		fmt.Println("Scan docker containers is running")
+		logger.Warn("Fetching docker containers")
 		select {
 		case <-ctx.Done():
 			fmt.Println("Receive cancel signal")
@@ -72,7 +72,7 @@ func ChannelWatchContainerStat(ch chan []container.Summary, chStat chan containe
 					IsRunning:  true,
 					CancelFunc: cancelFunc,
 				}
-				fmt.Println("Container added", k.ID, k.Names)
+				logger.Info(fmt.Sprintf("Container added %s %v", k.ID, k.Names))
 				go LoopFetchContainerStatInfo(dockerClient, k.ID, chStat, ctx, rootCtx)
 			}
 		}
